@@ -43,6 +43,7 @@ Trening koristi proizvode Hesijana i vektora.
 Puni Hesijan racuna se jednom za zavrsni model svakog CSV-a.
 """
 
+
 import os
 
 for _name in (
@@ -86,9 +87,9 @@ SEED = 39
 
 
 FILES = (
-    Path("/Users/4c/Desktop/GHQ/data/loto7_4712_k87.csv"),
-    Path("/Users/4c/Desktop/GHQ/data/loto7_4712_k87_loto_2978.csv"),
-    Path("/Users/4c/Desktop/GHQ/data/loto7_4712_k87_loto_plus_1734.csv"),
+    Path("/data/loto7_4712_k87.csv"),
+    Path("/data/loto7_4712_k87_loto_2978.csv"),
+    Path("/data/loto7_4712_k87_loto_plus_1734.csv"),
 )
 
 NUMBERS = 39
@@ -3362,7 +3363,7 @@ Greska simetrije Hesijana: 6.661e-16
 Greska Jakobijan-vektor: 3.921e-11
 Greska paketne simulacije: 2.289e-16
 
-V2 kontrolne tacke: /Users/4c/Desktop/GHQ/Astra/Quantum_Jacobians_Hessians_Newton/Quantum_Jacobians_Hessians_Newton_V2_checkpoints
+V2 kontrolne tacke: /Quantum_Jacobians_Hessians_Newton/Quantum_Jacobians_Hessians_Newton_V2_checkpoints
 
 ======================================================================
 OBRADA: loto7_4712_k87.csv
@@ -3734,7 +3735,7 @@ Racunam eksplicitne NEXT Jakobijane.
 
 REZULTAT: loto7_4712_k87.csv
 SEED: 39
-NEXT: 6 9 14 19 27 29 30
+NEXT: 6 x 14 y 27 z 30
 Izabran ridge: 0.10000
 Validacioni NLL: 16.756822872
 Odvojeni test NLL: 16.761194127
@@ -4187,7 +4188,7 @@ Racunam eksplicitne NEXT Jakobijane.
 
 REZULTAT: loto7_4712_k87_loto_2978.csv
 SEED: 39
-NEXT: 6 9 15 22 29 32 35
+NEXT: 6 x 15 y 29 z 35
 Izabran ridge: 0.10000
 Validacioni NLL: 16.757449715
 Odvojeni test NLL: 16.737695029
@@ -4640,7 +4641,7 @@ Racunam eksplicitne NEXT Jakobijane.
 
 REZULTAT: loto7_4712_k87_loto_plus_1734.csv
 SEED: 39
-NEXT: 1 3 13 26 32 34 36
+NEXT: 1 x 13 y 32 z 36
 Izabran ridge: 0.01000
 Validacioni NLL: 16.751598894
 Odvojeni test NLL: 16.709201893
@@ -4724,26 +4725,17 @@ Rezultat nije menjan radi uklanjanja dijagnostickog obrasca.
 
 ======================================================================
 ZAVRSNI NEXT REZULTATI
-loto7_4712_k87.csv | NEXT: 6 9 14 19 27 29 30 | seed: 39 | ridge: 0.10000 | test NLL: 16.761194127
-loto7_4712_k87_loto_2978.csv | NEXT: 6 9 15 22 29 32 35 | seed: 39 | ridge: 0.10000 | test NLL: 16.737695029
-loto7_4712_k87_loto_plus_1734.csv | NEXT: 1 3 13 26 32 34 36 | seed: 39 | ridge: 0.01000 | test NLL: 16.709201893
+loto7_4712_k87.csv | NEXT: 6 x 14 y 27 z 30 | seed: 39 | ridge: 0.10000 | test NLL: 16.761194127
+loto7_4712_k87_loto_2978.csv | NEXT: 6 x 15 y 29 z 35 | seed: 39 | ridge: 0.10000 | test NLL: 16.737695029
+loto7_4712_k87_loto_plus_1734.csv | NEXT: 1 x 13 y 32 z 36 | seed: 39 | ridge: 0.01000 | test NLL: 16.709201893
 """
 
 
 
 """
-Pregledaću ceo V1 i napraviti V2 sa aktivnim SEED = 39, bez uvođenja slučajnog generisanja. Proveriću i Newtonov korak, izvode, kontrolne tačke i završne dijagnostike. Kod ću dati u celini ovde; neću ga lokalno pokretati.
-
-
-
-U V2 će SEED = 39 određivati početne uglove i biti deo identiteta kontrolnih tačaka. Ukloniću računanje q*q iz izvoda, jer kod veoma malih Bornovih težina može numerički postati nula.
-
-Dodaću i eksplicitne matrice za završnu proveru: Jakobijan amplituda, Jakobijan verovatnoća uključenja i puni Hesijan funkcije cilja. Trening će i dalje koristiti proizvode Hesijana i vektora radi manjeg troška; puni Hesijan računaće se jednom za završni model svakog CSV-a.
-
-
-
-
-V2 sadrži aktivni SEED = 39, stabilniji izvod bez q*q, novi prostor kontrolnih tačaka i završne matrice Jakobijana i Hesijana. Osnovni Qiskit model ostaje isti.
-
-Python i trening nisam pokretao. Nezavisno sam proverio da seme menja determinističku inicijalizaciju i da preuređeni izvod ostaje konačan na malom numeričkom primeru. Provere Python implementacije ugrađene su u kod.
+V2 sa aktivnim SEED = 39, bez uvođenja slučajnog generisanja. 
+SEED = 39 određuje početne uglove i deo je identiteta kontrolnih tačaka. 
+Uklonio sam računanje q*q iz izvoda, jer kod veoma malih Bornovih težina može numerički postati nula.
+Dodao sam i eksplicitne matrice za završnu proveru: Jakobijan amplituda, Jakobijan verovatnoća uključenja i puni Hesijan funkcije cilja. 
+Trening i dalje koristi proizvode Hesijana i vektora radi manjeg troška; puni Hesijan računa se jednom za završni model svakog CSV-a.
 """
