@@ -84,9 +84,9 @@ from qiskit.quantum_info import Statevector
 VERSION = "Quantum_Jacobians_Hessians_Newton_V1_20261031"
 
 FILES = (
-    Path("/Users/4c/Desktop/GHQ/data/loto7_4712_k87.csv"),
-    Path("/Users/4c/Desktop/GHQ/data/loto7_4712_k87_loto_2978.csv"),
-    Path("/Users/4c/Desktop/GHQ/data/loto7_4712_k87_loto_plus_1734.csv"),
+    Path("/data/loto7_4712_k87.csv"),
+    Path("/data/loto7_4712_k87_loto_2978.csv"),
+    Path("/data/loto7_4712_k87_loto_plus_1734.csv"),
 )
 
 NUMBERS = 39
@@ -2738,7 +2738,7 @@ Greska simetrije malog Hesijana: 8.188e-16
 Greska Jakobijan-vektor: 5.424e-11
 Greska paketne Qiskit simulacije: 2.223e-16
 
-Kontrolne tacke: /Users/4c/Desktop/GHQ/Astra/Quantum_Jacobians_Hessians_Newton/Quantum_Newton_V1_checkpoints
+Kontrolne tacke: /Quantum_Jacobians_Hessians_Newton/Quantum_Newton_V1_checkpoints
 
 ======================================================================
 OBRADA: loto7_4712_k87.csv
@@ -3493,7 +3493,7 @@ Status: Dostignut budzet Newtonovih iteracija.
 DIJAGNOSTIKA: stacionarnost nije potvrdjena; zadrzan je najbolji vazeci kandidat.
 
 REZULTAT: loto7_4712_k87_loto_2978.csv
-NEXT: 6 9 15 22 29 32 35
+NEXT: 6 x 15 y 29 z 35
 Izabran ridge: 0.10000
 Validacioni NLL: 16.755245215
 Odvojeni test NLL: 16.738173616
@@ -3987,70 +3987,39 @@ Rezultat nije menjan radi uklanjanja dijagnostickog obrasca.
 
 ======================================================================
 ZAVRSNI NEXT REZULTATI
-loto7_4712_k87.csv | NEXT: 6 9 13 19 27 29 30 | ridge: 0.10000 | test NLL: 16.758623715
-loto7_4712_k87_loto_2978.csv | NEXT: 6 9 15 22 29 32 35 | ridge: 0.10000 | test NLL: 16.738173616
-loto7_4712_k87_loto_plus_1734.csv | NEXT: 1 3 13 26 32 34 36 | ridge: 0.10000 | test NLL: 16.701832924
+loto7_4712_k87.csv | NEXT: 6 x 13 y 27 z 30 | ridge: 0.10000 | test NLL: 16.758623715
+loto7_4712_k87_loto_2978.csv | NEXT: 6 x 15 y 29 z 35 | ridge: 0.10000 | test NLL: 16.738173616
+loto7_4712_k87_loto_plus_1734.csv | NEXT: 1 x 13 y 32 z 36 | ridge: 0.10000 | test NLL: 16.701832924
 """
 
 
 
 """
-Jacobians, Hessians & Newton’s Method: Beyond the Gradient
+Jacobians, Hessians & Newton
 
+učenje kvantnog modela pomoću zakrivljenosti funkcije greške 
 
-
-Ovu oblast nismo zasebno radili. Ima korisnu primenu: učenje kvantnog modela pomoću zakrivljenosti funkcije greške.
-
-Medium članak nisam uspeo da učitam, pa ne tvrdim da sam pregledao autorov postupak. Procena se odnosi na navedene matematičke metode.
-
-Za našu adaptaciju:
 - Jakobijan pokazuje kako svaki ugao Qiskit kola menja izlazne amplitude i raspodelu.
 - Hesijan pokazuje zakrivljenost NLL-a i međusobnu zavisnost parametara. Može otkriti ravne pravce i nestabilne korake.
-- Newtonov postupak sa ograničenjem koraka koristi tu zakrivljenost da predloži promenu uglova. Korak prihvatamo prema stvarnom smanjenju funkcije cilja.
-Za veći broj parametara možemo računati proizvod Hesijana i vektora, umesto cele matrice. Takav pristup podržava SciPy trust-krylov.
+- Newtonov postupak sa ograničenjem koraka koristi tu zakrivljenost da predloži promenu uglova. 
+Korak prihvatamo prema stvarnom smanjenju funkcije cilja.
+Za veći broj parametara računati proizvod Hesijana i vektora, umesto cele matrice. 
+Takav pristup podržava SciPy trust-krylov.
 
-Konkretna ideja za V1: Qiskit model raspodele sa učenjem drugog reda, uz proveru izvoda i kontrolu veličine koraka. Kvantne amplitude ostaju prediktivni izlaz; Newtonov postupak je klasični optimizator.
+V1: Qiskit model raspodele sa učenjem drugog reda, uz proveru izvoda i kontrolu veličine koraka. 
+Kvantne amplitude ostaju prediktivni izlaz; Newtonov postupak je klasični optimizator.
+V1 sa Newtonovim učenjem drugog reda i kontrolom veličine koraka. 
+Qiskit će računati amplitude, a optimizator će koristiti izvode da proceni zakrivljenost NLL-a. 
 
-To može pomoći učenju, ali veću cenu računanja mora opravdati boljom konvergencijom. Vredi razviti ovu oblast, uz očuvanje optimizacije drugog reda kao njene glavne ideje.
+Provera formula na malom primeru dala je odstupanje oko 5.18e-10 za gradijent i 1.26e-10 za proizvod Hesijana i vektora. 
+To je nezavisna provera u JavaScriptu. 
+V1 će koristiti Hesijan kroz takve proizvode, bez formiranja cele velike matrice, i sačuvaće najbolji važeći kandidat ako se dostigne budžet računanja.
+V1 koristi Newtonov postupak sa oblašću poverenja. 
+Jakobijan i proizvod Hesijana i vektora računaju se analitičkim diferenciranjem kvantne evolucije i normalizacije raspodele. 
+Trening ne koristi konačne razlike.
 
-
-
-
-
-
-Pravim V1 sa Newtonovim učenjem drugog reda i kontrolom veličine koraka. Qiskit će računati amplitude, a optimizator će koristiti izvode da proceni zakrivljenost NLL-a. Ugradiću provere izvoda, normalizacije i globalnog NEXT maksimuma. Kod ću dati ovde, bez lokalnog pokretanja.
-
-
-
-
-Read AGENTS.md
-
-
-
-Provera formula na malom primeru dala je odstupanje oko 5.18e-10 za gradijent i 1.26e-10 za proizvod Hesijana i vektora. To je nezavisna provera u JavaScriptu, ne test Python implementacije. V1 će koristiti Hesijan kroz takve proizvode, bez formiranja cele velike matrice, i sačuvaće najbolji važeći kandidat ako se dostigne budžet računanja.
-
-
-
-
-V1 koristi Newtonov postupak sa oblašću poverenja. Jakobijan i proizvod Hesijana i vektora računaju se analitičkim diferenciranjem kvantne evolucije i normalizacije raspodele. Trening ne koristi konačne razlike.
-
-Python nisam pokretao. Nezavisna matematička provera dala je odstupanja oko 5.18e-10 za gradijent i 1.26e-10 za proizvod Hesijana i vektora. Provere konkretne implementacije ugrađene su u fajl.
-
-
-
-
-
-Jakobijan, Hesijan i Newtonov metod jesu klasični matematički alati. U datom kodu kvantni deo je Qiskit kolo koje proizvodi amplitude. Klasični deo koristi njihove izvode za učenje uglova.
-
-Gde su konkretno:
-- Jakobijan: QuantumSource.forward(..., direction=...) računa J·v, odnosno kako promena uglova u zadatom smeru menja amplitude.
-- Hesijan: QuantumSource.backward(...) i Objective.evaluate(...) računaju H·v, uključujući zakrivljenost kvantnog izlaza i normalizacije raspodele.
-- Newton: truncated_newton_step(...) koristi te proizvode da izabere korak optimizacije.
-Nisam formirao pune matrice Jakobijana i Hesijana u treningu. Puni mali Hesijan formira se samo u samoproveri.
-
-Newton sam uključio zato što je deo naslova koji si poslao i predloga koji sam opisao pre „kreni“. Ali nazivom i objašnjenjem stavio sam njega u prvi plan, umesto da jasno predstavim sva tri dela. Ovo je Qiskit model sa klasičnim učenjem drugog reda; nije kvantni Newtonov algoritam.
-
-
-
-
+Jakobijan, Hesijan i Newtonov metod jesu klasični matematički alati. 
+U datom kodu kvantni deo je Qiskit kolo koje proizvodi amplitude. 
+Klasični deo koristi njihove izvode za učenje uglova.
+Ovo je Qiskit model sa klasičnim učenjem drugog reda; nije kvantni Newtonov algoritam.
 """
